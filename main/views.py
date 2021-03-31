@@ -1,10 +1,12 @@
-from django.shortcuts import render
-from django.views.generic.base import View
+from .models import Snippet
+from .serializer import SnippetSerializer
+from rest_framework import viewsets
 
-class MovieView(View):
-    """Список фильмов"""
-    
-    def get()
+class SnippetViewSet(viewsets.ModelViewSet):
+    queryset = Snippet.objects.all()
+    serializer_class = SnippetSerializer
+
+
 
 
 
