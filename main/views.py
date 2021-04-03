@@ -1,7 +1,6 @@
-from .models import Snippet
-from .serializer import SnippetSerializer
-from rest_framework import viewsets, status
+from .models import CodeModel, ProductModel, ProductFavoriteModel, ReviewModel, BasketModel
 
+from rest_framework import viewsets, status
 from django.contrib.auth.models import User
 from rest_framework.authtoken.models import Token
 from rest_framework.views import APIView
@@ -9,9 +8,9 @@ from django.shortcuts import render
 from rest_framework.response import Response
 from django.contrib.auth import authenticate
 
-class SnippetViewSet(viewsets.ModelViewSet):
-    queryset = Snippet.objects.all()
-    serializer_class = SnippetSerializer
+#for exept 
+from django.core.exceptions import ObjectDoesNotExist
+
 
 def home(request):
     return render(request, 'hemo.html')
@@ -29,6 +28,16 @@ class UserViews(APIView):
             return Response(status=status.HTTP_200_OK)
         else: 
             return Response(status=status.HTTP_400_BAD_REQUEST)
+
+class FavouriteView(APIView):
+    try: 
+        f_user = User.objects.get(username=str(request.data.get('username')))
+        f_products = ProductFavoriteModel.objects.filter(favorite_user=f_user)
+        
+        return Response(data=, status=status.HTTP_400_BAD_REQUEST)
+    except ObjectDoesNotExist:
+        return Response(status=status.HTTP_400_BAD_REQUEST)
+
 
 
 

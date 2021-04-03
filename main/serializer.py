@@ -1,8 +1,7 @@
-from .models import Snippet
 from rest_framework import serializers
+from .models import CodeModel, ProductModel, ProductFavoriteModel, ReviewModel, BasketModel
 
-class SnippetSerializer(serializers.ModelSerializer):
-    
-    class Meta:
-        model = Snippet
-        fields = ('title', 'body', 'created')
+
+
+
+

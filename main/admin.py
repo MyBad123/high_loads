@@ -1,7 +1,12 @@
 from django.contrib import admin
-from .models import Snippet, CodeModel
+from .models import CodeModel, ProductModel, ProductFavoriteModel, ReviewModel, BasketModel
 
-admin.site.register(Snippet)
+
+
 admin.site.register(CodeModel)
+admin.site.register(ProductModel)
+admin.site.register(ProductFavoriteModel)
+admin.site.register(ReviewModel)
+admin.site.register(BasketModel)
 
 
