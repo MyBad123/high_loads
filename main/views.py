@@ -30,13 +30,15 @@ class UserViews(APIView):
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
 class FavouriteView(APIView):
-    try: 
-        f_user = User.objects.get(username=str(request.data.get('username')))
-        f_products = ProductFavoriteModel.objects.filter(favorite_user=f_user)
-        
-        return Response(data=, status=status.HTTP_400_BAD_REQUEST)
-    except ObjectDoesNotExist:
-        return Response(status=status.HTTP_400_BAD_REQUEST)
+    def post(self, request):
+        try: 
+            f_user = User.objects.get(username=str(request.data.get('username')))
+            f_products = ProductFavoriteModel.objects.filter(favorite_user=f_user)
+            return Response(status=status.HTTP_200_OK)
+        except ObjectDoesNotExist:
+            return Response(status=status.HTTP_200_OK)
+
+
 
 
 
