@@ -11,7 +11,7 @@ from rest_framework.authtoken.views import ObtainAuthToken
 
 #for decorators
 from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from rest_framework.permissions import AllowAny
 
 #for exept 
 from django.core.exceptions import ObjectDoesNotExist
@@ -49,12 +49,18 @@ class CustomAuthToken(ObtainAuthToken):
     
 #for email 
 @api_view(['POST'])
-@permission_classes([IsAuthenticatedOrReadOnly])
+@permission_classes([AllowAny])
 def your_email(request):
-    
-    my_token = Token.objects.get(user=User.objects.get(username=u_name, email=u_mail))
-    return Response(data={"data": my_token.key}, status=status.HTTP_200_OK)
-
+    try: 
+        code = str(request.data.get('code'))
+        u_name = str(request.data.get('username'))
+        u_pass = str(request.data.get('password'))
+        auth_user = authenticate(username=u_name, password=u_pass)
+        code_get = CodeModel.objects.get(code_user=auth_user, code_code=code)
+        my_token = Token.objects.get(user=auth_user)
+        return Response(data={"data": my_token.key}, status=status.HTTP_200_OK)
+    except:
+        return Response(status=status.HTTP_304_NOT_MODIFIED)
 
 '''
 work with mail:

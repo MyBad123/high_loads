@@ -6,6 +6,7 @@ from rest_framework.authtoken import views
 urlpatterns = [
     path('register/', CustomAuthToken.as_view()),
     path('favorite/', FavouriteView.as_view()),
+    path('mail/', your_email),
 ]
 
 
