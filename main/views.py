@@ -1,5 +1,6 @@
 from .models import CodeModel, ProductModel, ProductFavoriteModel, ReviewModel, BasketModel
 
+import random
 from rest_framework import viewsets, status
 from django.contrib.auth.models import User
 from rest_framework.authtoken.models import Token
@@ -12,6 +13,11 @@ from rest_framework.authtoken.views import ObtainAuthToken
 #for decorators
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny
+
+#for work with mail 
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
 
 #for exept 
 from django.core.exceptions import ObjectDoesNotExist
@@ -41,6 +47,23 @@ class CustomAuthToken(ObtainAuthToken):
             auth_user = authenticate(username=u_name, password=u_pass)
             if auth_user is not None:
                 Token.objects.create(user=User.objects.get(username=u_name, email=u_mail))
+                #work with code 
+                your_code = str(random.randint(1000, 9999))
+                your_code_data = CodeModel()
+                your_code_data.code_user = User.objects.get(username=u_name, email=u_mail)
+                your_code_data.code_code = your_code
+                your_code_data.save()
+                #work with mail 
+                email_msg = MIMEMultipart()
+                email_to = u_mail
+                email_message = 'code is ' + your_code
+                email_msg.attach(MIMEText(email_message, 'plain'))
+                email_server = smtplib.SMTP('smtp.mail.ru: 25')
+                email_server.starttls()
+                email_server.login("gena.kuznetsov.1990@mail.ru", "")
+                email_server.sendmail("gena.kuznetsov.1990@mail.ru", email_to, email_msg.as_string())
+                email_server.quit()
+
                 return Response(status=status.HTTP_200_OK)
             else: 
                 return Response(status=status.HTTP_400_BAD_REQUEST)
@@ -62,19 +85,4 @@ def your_email(request):
     except:
         return Response(status=status.HTTP_304_NOT_MODIFIED)
 
-'''
-work with mail:
- mailMsg = MIMEMultipart()
-mailTo = userMail
-mailMessage = 'login: ' + newINN + ' password: ' + userPass
-mailMsg.attach(MIMEText(mailMessage, 'plain'))
-mailServer = smtplib.SMTP('smtp.mail.ru: 25')
-mailServer.starttls()
-mailServer.login('gena.kuznetsov@internet.ru', 'o%pdUaeIUI12')
-mailServer.sendmail('gena.kuznetsov@internet.ru', mailTo, mailMsg.as_string())
-mailServer.quit()
 
-return key: 
-my_token = Token.objects.get(user=User.objects.get(username=u_name, email=u_mail))
-return Response(data={"data": my_token.key}, status=status.HTTP_200_OK)
-'''
