@@ -7,6 +7,7 @@ urlpatterns = [
     path('register/', CustomAuthToken.as_view()),
     path('favorite/', FavouriteView.as_view()),
     path('mail/', your_email),
+    path('authorization/', for_uauth),
 ]
 
 

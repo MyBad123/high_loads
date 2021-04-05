@@ -70,7 +70,7 @@ class CustomAuthToken(ObtainAuthToken):
         except:
             return Response(status=status.HTTP_400_BAD_REQUEST)
     
-#for email 
+#email for new users   
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def your_email(request):
@@ -80,9 +80,34 @@ def your_email(request):
         u_pass = str(request.data.get('password'))
         auth_user = authenticate(username=u_name, password=u_pass)
         code_get = CodeModel.objects.get(code_user=auth_user, code_code=code)
+        code_get.code_code = str(random.randint(1000, 9999))
+        code_get.save()
         my_token = Token.objects.get(user=auth_user)
         return Response(data={"data": my_token.key}, status=status.HTTP_200_OK)
     except:
         return Response(status=status.HTTP_304_NOT_MODIFIED)
+
+#for old users 
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def for_uauth(request):
+    try: 
+        u_name = str(request.data.get('username'))
+        u_pass = str(request.data.get('password'))
+        auth_user = authenticate(username=u_name, password=u_pass)
+        my_token = Token.objects.get(user=auth_user)
+
+        return Response(data={"data": my_token.key}, status=status.HTTP_200_OK)
+    except:
+        return Response(status=status.HTTP_304_NOT_MODIFIED)
+
+
+
+
+
+
+
+
+
 
 
