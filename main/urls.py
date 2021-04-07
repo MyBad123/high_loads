@@ -11,7 +11,9 @@ urlpatterns = [
     path('products/', all_products),
     path('products/<int:pk>/', one_product),
     path('categories/', all_categories),
-    path('categories/<str:pk>', one_categories),
+    path('categories/<str:pk>/', one_categories),
+    path('review/', Review.as_view()),
+    path('review/<str:pk>/', review),
 ]
 
 

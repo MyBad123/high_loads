@@ -181,6 +181,75 @@ def one_categories(request, pk):
     except ObjectDoesNotExist:
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def review(request, pk):
+    try: 
+        products = ReviewModel.objects.filter(review_product=ProductModel.objects.get(id=pk))
+        data = []
+        for f_products in products:
+            data.append({
+                'user': f_products.review_user.username, 
+                'rating': f_products.review_rating, 
+                'description': f_products.review_description, 
+                'time': f_products.review_time
+            })
+        return Response(data={"products": data}, status=status.HTTP_200_OK)   
+    except ObjectDoesNotExist:
+        return Response(status=status.HTTP_400_BAD_REQUEST)
+
+
+
+class Review(APIView):    
+    def post(self, request):
+        try: 
+            new_user = User.objects.get(username=str(request.data.get('user')))
+            new_rating = int(request.data.get('rating'))
+            new_description = str(request.data.get('description'))
+            new_product = ProductModel.objects.get(id=int(request.data.get('product')))
+            new_my_review = ReviewModel()
+            new_my_review.review_user = new_user
+            new_my_review.review_rating = new_rating
+            new_my_review.review_description = new_description
+            new_my_review.review_product = new_product
+            new_my_review.save()
+            return Response(status=status.HTTP_200_OK)   
+        except ObjectDoesNotExist:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+    def delete(self, request):
+        try: 
+            new_user = ReviewModel.objects.get(review_user=User.objects.get(username=str(request.data.get('user'))))
+            new_user.delete()
+            return Response(status=status.HTTP_200_OK)   
+        except ObjectDoesNotExist:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+class BasketView(APIView):
+    def post(self, request):
+        try: 
+            basket = BasketModel.objects.filter(basket_user=User.objects.get(username=str(request.data.get('user'))))
+            data = []
+            for i in basket:
+                data.append({
+                    "name": i.basket_product.id, 
+                    "quantity": i.basket_quantity
+                })
+            return Response(status=status.HTTP_200_OK)   
+        except ObjectDoesNotExist:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+    def put(self, request):
+        if str(request.data.get('status')) == 'quantity': 
+            try: 
+                
+            except ObjectDoesNotExist:
+                return Response(status=status.HTTP_400_BAD_REQUEST)
+        elif str(request.data.get('status')) == 'object':
+            try: 
+            
+            except ObjectDoesNotExist:
+                return Response(status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
 
