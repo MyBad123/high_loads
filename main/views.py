@@ -60,7 +60,7 @@ class CustomAuthToken(ObtainAuthToken):
                 email_msg.attach(MIMEText(email_message, 'plain'))
                 email_server = smtplib.SMTP('smtp.mail.ru: 25')
                 email_server.starttls()
-                email_server.login("gena.kuznetsov.1990@mail.ru", "")
+                email_server.login("gena.kuznetsov.1990@mail.ru", "genagenagena12")
                 email_server.sendmail("gena.kuznetsov.1990@mail.ru", email_to, email_msg.as_string())
                 email_server.quit()
 

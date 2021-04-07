@@ -8,7 +8,7 @@ class CodeModel(models.Model):
 
 #work with shop 
 class ProductModel(models.Model):
-    product_name = models.CharField(max_length=100, primary_key=True)
+    product_name = models.CharField(max_length=100)
     product_category = models.CharField(max_length=20)
     product_price = models.IntegerField()
     product_sale = models.IntegerField()
