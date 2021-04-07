@@ -8,6 +8,10 @@ urlpatterns = [
     path('favorite/', FavouriteView.as_view()),
     path('mail/', your_email),
     path('authorization/', for_uauth),
+    path('products/', all_products),
+    path('products/<int:pk>/', one_product),
+    path('categories/', all_categories),
+    path('categories/<str:pk>', one_categories),
 ]
 
 

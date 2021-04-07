@@ -12,7 +12,7 @@ from rest_framework.authtoken.views import ObtainAuthToken
 
 #for decorators
 from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
 
 #for work with mail 
 import smtplib
@@ -29,10 +29,14 @@ class FavouriteView(APIView):
             f_products = ProductFavoriteModel.objects.filter(favorite_user=f_user)
             products = []
             for i in f_products:
-                products.append(i.favorite_product.product_name)
+                products.append({
+                    'id': i.favorite_product.id,
+                    'name': i.favorite_product.product_name,
+                    'photo': i.favorite_product.product_photo.url 
+                })
             return Response(data={"products": products}, status=status.HTTP_200_OK)
         except ObjectDoesNotExist:
-            return Response(status=status.HTTP_200_OK)
+            return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
 #for register
@@ -60,7 +64,7 @@ class CustomAuthToken(ObtainAuthToken):
                 email_msg.attach(MIMEText(email_message, 'plain'))
                 email_server = smtplib.SMTP('smtp.mail.ru: 25')
                 email_server.starttls()
-                email_server.login("gena.kuznetsov.1990@mail.ru", "genagenagena12")
+                email_server.login("gena.kuznetsov.1990@mail.ru", "Qwer1234!12")
                 email_server.sendmail("gena.kuznetsov.1990@mail.ru", email_to, email_msg.as_string())
                 email_server.quit()
 
@@ -100,6 +104,82 @@ def for_uauth(request):
         return Response(data={"data": my_token.key}, status=status.HTTP_200_OK)
     except:
         return Response(status=status.HTTP_304_NOT_MODIFIED)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def one_product(request, pk):
+    try: 
+        f_products = ProductModel.objects.get(id=pk)
+        return Response(data={
+            'id': f_products.id, 
+            'name': f_products.product_name,
+            'photo': f_products.product_photo.url, 
+            'category': f_products.product_category,   
+            'price': f_products.product_price, 
+            'sale': f_products.product_sale, 
+            'rating': f_products.prouct_rating, 
+            'description': f_products.prouct_description, 
+            'sales': f_products.prouct_sales
+        }, status=status.HTTP_200_OK)
+    except ObjectDoesNotExist:
+        return Response(status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def all_products(request):
+    try: 
+        products = ProductModel.objects.order_by('-prouct_sales')
+        data = []
+        for f_products in products:
+            data.append({
+                'id': f_products.id, 
+                'name': f_products.product_name,
+                'photo': f_products.product_photo.url, 
+                'category': f_products.product_category,   
+                'price': f_products.product_price, 
+                'sale': f_products.product_sale, 
+                'rating': f_products.prouct_rating, 
+                'description': f_products.prouct_description, 
+                'sales': f_products.prouct_sales
+            })
+        return Response(data={"products": data}, status=status.HTTP_200_OK)    
+    except ObjectDoesNotExist:
+        return Response(status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def all_categories(request):
+    try: 
+        products = ProductModel.objects.order_by('-prouct_sales')
+        data = []
+        for i in products:
+            if i.product_category not in data:
+                data.append(i.product_category)
+        return Response(data={"categories": data}, status=status.HTTP_200_OK)    
+    except ObjectDoesNotExist:
+        return Response(status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def one_categories(request, pk):
+    try: 
+        products = ProductModel.objects.filter(product_category=pk)
+        data = []
+        for f_products in products:
+            data.append({
+                'id': f_products.id, 
+                'name': f_products.product_name,
+                'photo': f_products.product_photo.url, 
+                'category': f_products.product_category,   
+                'price': f_products.product_price, 
+                'sale': f_products.product_sale, 
+                'rating': f_products.prouct_rating, 
+                'description': f_products.prouct_description, 
+                'sales': f_products.prouct_sales
+            })
+        return Response(data={"products": data}, status=status.HTTP_200_OK)   
+    except ObjectDoesNotExist:
+        return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
 
