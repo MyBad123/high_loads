@@ -14,6 +14,7 @@ urlpatterns = [
     path('categories/<str:pk>/', one_categories),
     path('review/', Review.as_view()),
     path('review/<str:pk>/', review),
+    path('basket/', BasketView.as_view()),
 ]
 
 

@@ -234,23 +234,64 @@ class BasketView(APIView):
                     "name": i.basket_product.id, 
                     "quantity": i.basket_quantity
                 })
-            return Response(status=status.HTTP_200_OK)   
+            return Response(data={"objects": data}, status=status.HTTP_200_OK)   
         except ObjectDoesNotExist:
             return Response(status=status.HTTP_400_BAD_REQUEST)
     def put(self, request):
         if str(request.data.get('status')) == 'quantity': 
             try: 
-                
+                this_object = BasketModel.objects.get(
+                    basket_user = User.objects.get(username=str(request.data.get('user'))),
+                    basket_product = ProductModel.objects.get(id=int(request.data.get('object')))
+                )    
+                this_object.basket_quantity = int(request.data.get('quantity'))
+                this_object.save()
+                new_objects = BasketModel.objects.filter(basket_user=User.objects.get(username=str(request.data.get('user'))))
+                data = []
+                for i in new_objects:
+                    data.append({
+                        "name": i.basket_product.id, 
+                        "quantity": i.basket_quantity
+                    })
+                return Response(data={"objets": data}, status=status.HTTP_200_OK)
             except ObjectDoesNotExist:
                 return Response(status=status.HTTP_400_BAD_REQUEST)
         elif str(request.data.get('status')) == 'object':
             try: 
-            
+                this_object = BasketModel()    
+                this_object.basket_user = User.objects.get(username=str(request.data.get('user')))
+                this_object.basket_quantity = int(request.data.get('quantity'))
+                this_object.basket_product = ProductModel.objects.get(id=int(request.data.get('object')))
+                this_object.save()
+                new_objects = BasketModel.objects.filter(basket_user=User.objects.get(username=str(request.data.get('user'))))
+                data = []
+                for i in new_objects:
+                    data.append({
+                        "name": i.basket_product.id, 
+                        "quantity": i.basket_quantity
+                    })
+                return Response(data={"objets": data}, status=status.HTTP_200_OK)
             except ObjectDoesNotExist:
                 return Response(status=status.HTTP_400_BAD_REQUEST)
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST)
-
+    def delete(self, request):
+        try: 
+            this_object = BasketModel.objects.get(
+                basket_user = User.objects.get(username=str(request.data.get('user'))),
+                basket_product = ProductModel.objects.get(id=int(request.data.get('object')))
+            )    
+            this_object.delete()
+            new_objects = BasketModel.objects.filter(basket_user=User.objects.get(username=str(request.data.get('user'))))
+            data = []
+            for i in new_objects:
+                data.append({
+                    "name": i.basket_product.id, 
+                    "quantity": i.basket_quantity
+                })
+            return Response(data={"objets": data}, status=status.HTTP_200_OK)
+        except ObjectDoesNotExist:
+            return Response(status=status.HTTP_400_BAD_REQUEST)    
 
 
 
