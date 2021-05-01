@@ -22,22 +22,6 @@ from email.mime.multipart import MIMEMultipart
 #for exept 
 from django.core.exceptions import ObjectDoesNotExist
 
-class FavouriteView(APIView):
-    def post(self, request):
-        try: 
-            f_user = User.objects.get(username=str(request.data.get('username')))
-            f_products = ProductFavoriteModel.objects.filter(favorite_user=f_user)
-            products = []
-            for i in f_products:
-                products.append({
-                    'id': i.favorite_product.id,
-                    'name': i.favorite_product.product_name,
-                    'photo': i.favorite_product.product_photo.url 
-                })
-            return Response(data={"products": products}, status=status.HTTP_200_OK)
-        except ObjectDoesNotExist:
-            return Response(status=status.HTTP_400_BAD_REQUEST)
-
 
 #for register
 class CustomAuthToken(ObtainAuthToken):
@@ -294,10 +278,56 @@ class BasketView(APIView):
             return Response(status=status.HTTP_400_BAD_REQUEST)    
 
 
+class FavouriteView(APIView):
+    def post(self, request):
+        try: 
+            favorite = ProductFavoriteModel.objects.filter(favorite_user=User.objects.get(username=str(request.data.get('user'))))
+            data = []
+            for i in favorite:
+                data.append({
+                    "name": i.favorite_product.id, 
+                    "photo": i.favorite_product.product_photo.url
+                })
+            return Response(data={"objects": data}, status=status.HTTP_200_OK)   
+        except ObjectDoesNotExist:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+    def put(self, request):  
+        try: 
+            this_object = ProductFavoriteModel()    
+            this_object.favorite_user = User.objects.get(username=str(request.data.get('user')))
+            this_object.favorite_product = ProductModel.objects.get(id=int(request.data.get('object')))
+            this_object.save()
+            new_objects = ProductFavoriteModel.objects.filter(favorite_user=User.objects.get(username=str(request.data.get('user'))))
+            data = []
+            for i in new_objects:
+                data.append({
+                    "name": i.favorite_product.id, 
+                    "photo": i.favorite_product.product_photo.url
+                })
+            return Response(data={"objects": data}, status=status.HTTP_200_OK) 
+        except ObjectDoesNotExist:
+            return Response(status=status.HTTP_400_BAD_REQUEST)   
+    def delete(self, request):
+        try: 
+            this_object = ProductFavoriteModel.objects.get(
+                favorite_user = User.objects.get(username=str(request.data.get('user'))),
+                favorite_product = ProductModel.objects.get(id=int(request.data.get('object')))
+            )    
+            this_object.delete()
+            new_objects = ProductFavoriteModel.objects.filter(favorite_user=User.objects.get(username=str(request.data.get('user'))))
+            data = []
+            for i in new_objects:
+                data.append({
+                    "name": i.favorite_product.id, 
+                    "photo": i.favorite_product.product_photo.url
+                })
+            return Response(data={"objects": data}, status=status.HTTP_200_OK)
+        except ObjectDoesNotExist:
+            return Response(status=status.HTTP_400_BAD_REQUEST)    
 
 
-
-
+def wow():
+    return 'wow'
 
 
 
