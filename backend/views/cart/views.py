@@ -5,7 +5,7 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from backend.models import CartModel, Product, Category, CategoryForProduct
 from backend.views.cart.serializers import AddProductSerializer
-from backend.views.cart.utils import UtilCart
+from backend.views.cart.utils import UtilCart, CartUtils
 
 
 class CartView(APIView):
@@ -46,3 +46,19 @@ class CartView(APIView):
 
         util = self.db_worker(request)
         return Response(data=util.delete_product_cart(request.data))
+
+
+class OrderingView(APIView):
+    """make ordering by request of user"""
+
+    permission_classes = [IsAuthenticated]
+    util = CartUtils
+
+    def post(self, request: Request):
+        cart_util = self.util(request)
+
+        if cart_util.cart_is_empty():
+            return Response(data={'detailed': 'Your cart does not contain any products'})
+
+        return Response(data=cart_util.make_ordering())
+

@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User
 from rest_framework.request import Request
-from backend.models import CartModel, CategoryForProduct, Category, Product
+from backend.models import CartModel, CategoryForProduct, Category, Product, OrderModel, ProductsInOrderModel
 
 
 class UtilProduct:
@@ -54,3 +54,25 @@ class UtilCart(UtilProduct):
                 pass
 
         return super().get_products_by_user()
+
+
+class CartUtils:
+    """"""
+
+    def __init__(self, request: Request):
+        self.query_set = CartModel.objects.filter(user=request.user)
+        self.user = request.user
+
+    def cart_is_empty(self) -> bool:
+        return False if len(self.query_set) else True
+
+    def make_ordering(self) -> dict:
+        ordering = OrderModel.objects.create(user=self.user)
+
+        for i in self.query_set:
+            ProductsInOrderModel.objects.create(order=ordering, product=i.product)
+
+        return {
+            'ordering_id': ordering.id,
+            'products': [UtilProduct.get_category_product(i) for i in self.query_set]
+        }
