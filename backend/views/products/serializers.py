@@ -1,5 +1,13 @@
 from rest_framework import serializers
-from backend.models import Product
+from backend.models import Product, Category
+
+
+class CategorySerializer(serializers.ModelSerializer):
+    """serializer for Product from db"""
+
+    class Meta:
+        model = Category
+        fields = '__all__'
 
 
 class ProductSerializer(serializers.ModelSerializer):
@@ -7,10 +15,19 @@ class ProductSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Product
-        fields = ['name', 'about', 'price']
+        fields = '__all__'
+
+
+class ProductWithCategorySerializer(serializers.Serializer):
+    category = CategorySerializer()
+    product = ProductSerializer()
 
 
 class QueryProductSerializer(serializers.Serializer):
     min = serializers.BooleanField(allow_null=True)
     max = serializers.BooleanField(allow_null=True)
     sort = serializers.CharField()
+
+
+class QuerySerializer(serializers.Serializer):
+    pk = serializers.IntegerField()

@@ -1,10 +1,16 @@
 from pathlib import Path
 
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-1#m*gt)2ehq*op_u$cxge=b_*_(t8peai(z+g1&-92irv2y4&+'
 DEBUG = True
 ALLOWED_HOSTS = []
 
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'backend.auth.TokenAuthentication',
+    ]
+}
 
 INSTALLED_APPS = [
     'django.contrib.admin',
