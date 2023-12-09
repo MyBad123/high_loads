@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.urls import path
 
 # my imports
-from backend.views.products.views import ProductList
+from backend.views.products.views import ProductList, ProductSingleView
 from backend.views.cart.views import CartView
 
 from backend.views.auth_view import AuthView
@@ -10,6 +10,7 @@ from backend.views.auth_view import AuthView
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('products', ProductList.as_view()),
+    path('product', ProductSingleView.as_view()),
 
     # for auth
     path('auth', AuthView.as_view()),

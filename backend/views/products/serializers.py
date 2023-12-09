@@ -26,7 +26,7 @@ class ProductWithCategorySerializer(serializers.Serializer):
 class QueryProductSerializer(serializers.Serializer):
     min = serializers.BooleanField(allow_null=True)
     max = serializers.BooleanField(allow_null=True)
-    sort = serializers.CharField()
+    sort = serializers.CharField(allow_null=True)
 
 
 class QuerySerializer(serializers.Serializer):
