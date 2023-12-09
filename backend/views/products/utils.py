@@ -1,6 +1,6 @@
 from rest_framework.request import Request
 from rest_framework.utils.serializer_helpers import ReturnList
-from backend.models import Product, CategoryForProduct
+from backend.models import Product, CategoryForProduct, Category
 from backend.views.products.serializers import QueryProductSerializer, ProductSerializer
 
 
@@ -74,3 +74,24 @@ class ProductUtil:
             "price": product.price,
             "category": [i.category.name for i in category]
         }
+
+
+class CategoryUtils:
+
+    @staticmethod
+    def get_tree():
+        # make requests
+        category = Category.objects.all()
+        products = CategoryForProduct.objects.all()
+
+        data = {}
+        for i in category:
+            data.update({i.name: []})
+
+        for i in products:
+            data[i.category.name].append({
+                'product_name': i.product.name,
+                'product_id': i.product.id
+            })
+
+        return data

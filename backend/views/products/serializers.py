@@ -31,3 +31,6 @@ class QueryProductSerializer(serializers.Serializer):
 
 class QuerySerializer(serializers.Serializer):
     pk = serializers.IntegerField()
+
+
+

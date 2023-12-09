@@ -1,12 +1,9 @@
 from rest_framework import status
-from rest_framework.utils.serializer_helpers import ReturnList
-from rest_framework.generics import ListAPIView
 from rest_framework.views import APIView
 from rest_framework.request import Request
 from rest_framework.response import Response
-from backend.models import Product, CategoryForProduct
-from backend.views.products.serializers import QueryProductSerializer, QuerySerializer, ProductWithCategorySerializer
-from backend.views.products.utils import ProductUtil
+from backend.views.products.serializers import QuerySerializer
+from backend.views.products.utils import ProductUtil, CategoryUtils
 
 
 class ProductList(APIView):
@@ -37,3 +34,12 @@ class ProductSingleView(APIView):
                 return Response(data=util_product)
 
         return Response(status=status.HTTP_404_NOT_FOUND)
+
+
+class CategoryTreeView(APIView):
+    """make tree with category and it's products"""
+
+    util = CategoryUtils
+
+    def get(self, request: Request):
+        return Response(data=self.util.get_tree())
