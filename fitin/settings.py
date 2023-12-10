@@ -1,10 +1,11 @@
+import os
 from pathlib import Path
 
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-1#m*gt)2ehq*op_u$cxge=b_*_(t8peai(z+g1&-92irv2y4&+'
 DEBUG = True
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['0.0.0.0', '127.0.0.1']
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
@@ -53,13 +54,22 @@ TEMPLATES = [
 WSGI_APPLICATION = 'fitin.wsgi.application'
 
 
+print(os.environ.get('DB_DATABASE'))
+print(os.environ.get('DB_USER'))
+print(os.environ.get('POSTGRES_PASSWORD'))
+print(os.environ.get('DB_HOST'))
+
+
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": os.environ.get('DB_DATABASE'),
+        "USER": os.environ.get('DB_USER'),
+        "PASSWORD": os.environ.get('DB_PASSWORD'),
+        "HOST": os.environ.get('DB_HOST'),
+        "PORT": "5432",
     }
 }
-
 
 AUTH_PASSWORD_VALIDATORS = [
     {
