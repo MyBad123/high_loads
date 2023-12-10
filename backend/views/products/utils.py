@@ -28,9 +28,9 @@ class ProductUtil:
                 product_objs = product_objs.filter(price__lte=sort_params.get('max'))
 
             if sort_params.get('sort') == 'min-max':
-                product_objs = product_objs.order_by('product__price')
+                product_objs = product_objs.order_by('price')
             elif sort_params.get('sort') == 'max-min':
-                product_objs = product_objs.order_by('-product__price')
+                product_objs = product_objs.order_by('-price')
 
         return product_objs
 

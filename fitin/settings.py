@@ -53,13 +53,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'fitin.wsgi.application'
 
-
-print(os.environ.get('DB_DATABASE'))
-print(os.environ.get('DB_USER'))
-print(os.environ.get('POSTGRES_PASSWORD'))
-print(os.environ.get('DB_HOST'))
-
-
+'''
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
@@ -68,6 +62,14 @@ DATABASES = {
         "PASSWORD": os.environ.get('DB_PASSWORD'),
         "HOST": os.environ.get('DB_HOST'),
         "PORT": "5432",
+    }
+}
+'''
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
 

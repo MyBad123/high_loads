@@ -25,7 +25,7 @@ class CartView(APIView):
 
         # add products for user and return it
         util = self.db_worker(request)
-        return Response(data=util.add_product_cart(request.data))
+        return Response(data=util.add_product_cart(request.data.get('products')))
 
     def get(self, request: Request):
         util = self.db_worker(request)
@@ -45,7 +45,7 @@ class CartView(APIView):
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
         util = self.db_worker(request)
-        return Response(data=util.delete_product_cart(request.data))
+        return Response(data=util.delete_product_cart(request.data.get('products')))
 
 
 class OrderingView(APIView):

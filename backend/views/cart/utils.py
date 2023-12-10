@@ -35,7 +35,7 @@ class UtilCart(UtilProduct):
         for i in id_product:
             try:
                 product = Product.objects.get(id=i)
-                CartModel.objects.create(product=product, user=super().request.user)
+                CartModel.objects.create(product=product, user=self.request.user)
             except (ValueError, Product.DoesNotExist):
                 pass
 
@@ -48,7 +48,7 @@ class UtilCart(UtilProduct):
             try:
                 product = Product.objects.get(id=i)
 
-                delete_obj = CartModel.objects.create(product=product, user=super().request.user)
+                delete_obj = CartModel.objects.get(product=product, user=self.request.user)
                 delete_obj.delete()
             except (ValueError, Product.DoesNotExist):
                 pass
@@ -72,7 +72,13 @@ class CartUtils:
         for i in self.query_set:
             ProductsInOrderModel.objects.create(order=ordering, product=i.product)
 
-        return {
+        returned_data = {
             'ordering_id': ordering.id,
-            'products': [UtilProduct.get_category_product(i) for i in self.query_set]
+            'products': [UtilProduct.get_category_product(i.product) for i in self.query_set]
         }
+
+        # delete all objects from cart of user
+        for i in self.query_set:
+            i.delete()
+
+        return returned_data

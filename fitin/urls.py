@@ -3,7 +3,7 @@ from django.urls import path
 
 # my imports
 from backend.views.products.views import ProductList, ProductSingleView, CategoryTreeView
-from backend.views.cart.views import CartView
+from backend.views.cart.views import CartView, OrderingView
 
 from backend.views.auth_view import AuthView
 
@@ -16,4 +16,5 @@ urlpatterns = [
     # for auth
     path('auth', AuthView.as_view()),
     path('cart', CartView.as_view()),
+    path('order', OrderingView.as_view())
 ]
