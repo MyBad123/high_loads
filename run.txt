@@ -1,0 +1,2 @@
+python setup_replication.py --primary_host primary_host --primary_port 5432 --primary_user postgres --primary_password primary_password --replica_host replica_host --replica_port 5432 --replica_user postgres --replica_password replica_password --replication_slot my_slot --replication_user replication_user
+
